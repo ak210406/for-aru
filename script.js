@@ -500,7 +500,67 @@ function renderSlides() {
     const slide = slides[currentSlide];
     
     document.getElementById('slide-title').innerText = slide.title;
-    document.getElementById('slide-text').innerText = slide.text;
+    
+    // Clear previous nextBtn state
+    document.getElementById('nextBtn').style.display = 'flex';
+
+    // If it's a quiz slide, render quiz interface instead of raw text
+    if (slide.quiz) {
+      document.getElementById('slide-text').innerHTML = `
+        <span class="quiz-question-text">${slide.text}</span>
+        <div class="quiz-options-container">
+          ${slide.quiz.options.map((option, idx) => `
+            <button class="quiz-option-btn font-sans" data-index="${idx}">
+              <span>${option}</span>
+              <span class="option-check"></span>
+            </button>
+          `).join('')}
+        </div>
+        <div class="quiz-feedback" id="quiz-feedback-el"></div>
+      `;
+      
+      // Hide Next button until correct answer is chosen
+      document.getElementById('nextBtn').style.display = 'none';
+
+      // Attach choice event listeners
+      const optionButtons = document.querySelectorAll('.quiz-option-btn');
+      optionButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const clickedBtn = e.currentTarget;
+          const selectedIdx = parseInt(clickedBtn.getAttribute('data-index'));
+          const feedbackEl = document.getElementById('quiz-feedback-el');
+          
+          if (selectedIdx === slide.quiz.correctIndex) {
+            // Disable further choice clicks
+            optionButtons.forEach(b => {
+              b.disabled = true;
+              b.classList.remove('wrong');
+            });
+            clickedBtn.classList.add('correct');
+            feedbackEl.innerText = slide.quiz.successMessage;
+            feedbackEl.className = "quiz-feedback success";
+            
+            // Show Next button
+            document.getElementById('nextBtn').style.display = 'flex';
+            
+            // Play quick floating confetti particles at button
+            const btnRect = clickedBtn.getBoundingClientRect();
+            for (let i = 0; i < 40; i++) {
+              confetti.push(new ConfettiParticle(btnRect.left + btnRect.width/2, btnRect.top + btnRect.height/2));
+            }
+          } else {
+            clickedBtn.classList.add('wrong');
+            feedbackEl.innerText = slide.quiz.errorMessage;
+            feedbackEl.className = "quiz-feedback error";
+            
+            // Reset shake animation class
+            setTimeout(() => clickedBtn.classList.remove('wrong'), 400);
+          }
+        });
+      });
+    } else {
+      document.getElementById('slide-text').innerText = slide.text;
+    }
 
     // Load custom image or default vector SVG
     if (slide.image) {
@@ -671,6 +731,44 @@ yesBtn.addEventListener('click', () => {
     document.getElementById('celeb-text').innerText = localConfig.celebrationText;
     document.getElementById('celeb-your-name').innerText = localConfig.yourName;
     document.getElementById('celeb-img').src = localConfig.celebrationImage;
+
+    // Render Coupon Book dynamically
+    const couponsContainer = document.getElementById('coupons-section');
+    if (couponsContainer && localConfig.coupons && localConfig.coupons.length > 0) {
+      let couponsHTML = `
+        <h3 class="font-romantic" style="font-size: 1.5rem; color: var(--color-accent); margin: 30px 0 5px 0; text-align: center;">🎫 Your Virtual Love Coupons</h3>
+        <p class="font-sans" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; text-align: center;">Click to redeem on WhatsApp instantly!</p>
+        <div class="coupons-container">
+      `;
+      localConfig.coupons.forEach((coupon) => {
+        couponsHTML += `
+          <div class="coupon-card">
+            <div>
+              <div class="coupon-title">${coupon.title}</div>
+              <div class="coupon-desc">${coupon.desc}</div>
+            </div>
+            <button class="redeem-btn" data-coupon-title="${coupon.title}">
+              <span>Redeem 🎫</span>
+            </button>
+          </div>
+        `;
+      });
+      couponsHTML += '</div>';
+      couponsContainer.innerHTML = couponsHTML;
+
+      // Attach redeem event handlers
+      const redeemBtns = couponsContainer.querySelectorAll('.redeem-btn');
+      redeemBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const couponTitle = e.currentTarget.getAttribute('data-coupon-title');
+          const cleanPhone = localConfig.whatsappNumber.replace(/\D/g, ''); // Digits only
+          const message = `Hey! I want to redeem my love coupon for: "${couponTitle}"! ❤️`;
+          const encodedText = encodeURIComponent(message);
+          const link = `https://wa.me/${cleanPhone}?text=${encodedText}`;
+          window.open(link, '_blank');
+        });
+      });
+    }
   }, 300);
 });
 
