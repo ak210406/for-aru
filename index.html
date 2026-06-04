@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Special Message For You ❤️</title>
+  
+  <!-- SEO & Social Meta Tags -->
+  <meta name="description" content="A beautiful interactive letter created especially for you. Click to open and read.">
+  <meta property="og:title" content="A Special Message For You ❤️">
+  <meta property="og:description" content="Open to read this romantic interactive letter.">
+  <meta property="og:type" content="website">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Sacramento&display=swap" rel="stylesheet">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Starry Background Canvas -->
+  <canvas id="starsCanvas"></canvas>
+  <div id="particleOverlay"></div>
+
+  <!-- Music Player Controller -->
+  <button id="musicToggle" class="floating-btn music-btn" aria-label="Toggle Music">
+    <svg class="music-icon" viewBox="0 0 24 24" width="24" height="24">
+      <path fill="currentColor" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+    </svg>
+    <div class="music-waves">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </button>
+
+  <!-- Main Container -->
+  <main id="app-container">
+
+    <!-- STAGE 1: The Sealed Envelope -->
+    <section id="stage-envelope" class="stage active">
+      <div class="envelope-wrapper">
+        <h1 class="envelope-recipient font-romantic">For <span id="env-crush-name">Someone Special</span></h1>
+        
+        <div class="envelope-container" id="envelope">
+          <div class="envelope">
+            <div class="flap top-flap"></div>
+            <div class="flap left-flap"></div>
+            <div class="flap right-flap"></div>
+            <div class="letter-preview">
+              <div class="letter-line-short"></div>
+              <div class="letter-line"></div>
+              <div class="letter-line"></div>
+            </div>
+            <div class="wax-seal">
+              <div class="heart-seal">❤️</div>
+            </div>
+          </div>
+          <div class="envelope-shadow"></div>
+        </div>
+        
+        <p class="click-instruction">You have received a letter. Click it to open...</p>
+      </div>
+    </section>
+
+    <!-- STAGE 2: The Romantic Card Slider & The Big Question -->
+    <section id="stage-letter" class="stage">
+      <div class="letter-card-container">
+        
+        <!-- Left Page: Image/Illustration -->
+        <div class="card-media-panel">
+          <div class="glow-effect"></div>
+          <div class="media-container" id="slide-media">
+            <!-- Dynamic SVGs or User Images will be injected here -->
+          </div>
+        </div>
+
+        <!-- Right Page: The Text/Message Content -->
+        <div class="card-content-panel">
+          <div class="card-header">
+            <span class="card-badge font-sans">Our Story</span>
+            <div class="progress-bar">
+              <div id="progress-indicator"></div>
+            </div>
+          </div>
+
+          <div class="slider-content">
+            <!-- Slide texts will be rendered here dynamically -->
+            <div class="slide-pane active" id="current-slide-pane">
+              <h2 class="slide-title font-romantic" id="slide-title">Slide Title</h2>
+              <p class="slide-text font-sans" id="slide-text">Slide description text goes here.</p>
+            </div>
+          </div>
+
+          <!-- Slider Controls -->
+          <div class="slider-controls" id="normal-controls">
+            <button id="prevBtn" class="control-btn" disabled>
+              <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+              <span>Back</span>
+            </button>
+            <div class="slide-dots" id="slide-dots">
+              <!-- Dots injected dynamically -->
+            </div>
+            <button id="nextBtn" class="control-btn primary-control">
+              <span>Next</span>
+              <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </button>
+          </div>
+
+          <!-- Proposal Controls (Visible only on the final proposal slide) -->
+          <div class="proposal-controls hidden" id="proposal-controls">
+            <div class="proposal-buttons">
+              <button id="yesBtn" class="proposal-btn yes-btn font-sans">
+                <span class="btn-stars">✨</span>
+                <span id="yes-btn-text">Yes, I will! ❤️</span>
+              </button>
+              <button id="noBtn" class="proposal-btn no-btn font-sans">
+                <span id="no-btn-text">No</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGE 3: The Celebration (Yes Response) -->
+    <section id="stage-celebration" class="stage">
+      <div class="celebration-card">
+        <div class="sparkle-layer"></div>
+        <div class="celebration-badge">❤️</div>
+        
+        <h1 class="celebration-title font-romantic" id="celeb-title">YES! ❤️</h1>
+        
+        <div class="celeb-image-wrapper">
+          <img id="celeb-img" src="" alt="Starry Heart Constellation">
+          <div class="celebration-glow"></div>
+        </div>
+        
+        <p class="celebration-text font-sans" id="celeb-text">I can't wait to write the next chapters of our beautiful story together.</p>
+        
+        <div class="celeb-footer">
+          <div class="signature font-romantic">
+            With love, <span id="celeb-your-name">Your Name</span>
+          </div>
+          
+          <!-- Date invitation CTA button -->
+          <button id="dateInviteBtn" class="date-invite-btn font-sans">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+              <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+            </svg>
+            <span>Let's Plan a Date! 🥂</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Customization Gear Icon -->
+  <button id="customizerToggle" class="floating-btn config-btn" aria-label="Customize Proposal Site">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+      <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+    </svg>
+  </button>
+
+  <!-- Live Customizer Modal -->
+  <div id="customizerModal" class="modal">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h2 class="font-romantic">Customize Your Proposal Site</h2>
+        <button id="closeModal" class="close-btn">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="customizerForm">
+          
+          <div class="form-section">
+            <h3>Names & Basic Info</h3>
+            <div class="form-group">
+              <label for="inputCrushName">Crush's Name</label>
+              <input type="text" id="inputCrushName" required placeholder="e.g. Sarah">
+            </div>
+            <div class="form-group">
+              <label for="inputYourName">Your Name</label>
+              <input type="text" id="inputYourName" required placeholder="e.g. Alex">
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>The Proposal Slide</h3>
+            <div class="form-group">
+              <label for="inputQuestionTitle">Question Title</label>
+              <input type="text" id="inputQuestionTitle" required>
+            </div>
+            <div class="form-group">
+              <label for="inputQuestionText">Question Subtext</label>
+              <textarea id="inputQuestionText" rows="2" required></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="inputYesBtn">Yes Button Text</label>
+                <input type="text" id="inputYesBtn" required>
+              </div>
+              <div class="form-group">
+                <label for="inputNoBtn">No Button Text</label>
+                <input type="text" id="inputNoBtn" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>WhatsApp Settings (Optional)</h3>
+            <p class="form-note">Get an instant notification message on your phone when they click Yes!</p>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="inputPhone">Your WhatsApp Number (include country code, digits only)</label>
+                <input type="text" id="inputPhone" placeholder="e.g. 15550199">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Story Slides</h3>
+            <div id="slidesConfigContainer">
+              <!-- Slide fields will be dynamically generated here -->
+            </div>
+            <button type="button" id="addSlideBtn" class="form-secondary-btn">+ Add New Slide</button>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="resetConfigBtn" class="form-secondary-btn">Reset Defaults</button>
+        <button type="button" id="saveLocalBtn" class="form-secondary-btn">Save to Browser</button>
+        <button type="button" id="shareBtn" class="form-primary-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+          <span>Generate Shareable Link</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Link Notification Toast -->
+  <div id="toast" class="toast">Link copied to clipboard! Share it with your crush. 💖</div>
+
+  <!-- Import Scripts -->
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
